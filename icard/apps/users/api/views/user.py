@@ -16,13 +16,11 @@ from icard.utils.constants import (
 
 
 class UserViewSet(viewsets.ViewSet):
-    # GET: api/users/user
-    def list(self, request):
-        if not request.user.is_staff:
-            return Response(PERMISSIONS_ERROR, status=status.HTTP_403_FORBIDDEN)
-        users = user_providers.get_all_users()
-        serializer = UserListSerializer(users, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    @action(detail=False, url_name="me", url_path="me",)
+    def me(self, request):
+        user = request.user
+        serializer = UserListSerializer(user)
+        return Response(serializer.data)
 
     # POST: api/users/user/signup/
     @action(detail=False, methods=['post'], url_name="signup", url_path="signup")
